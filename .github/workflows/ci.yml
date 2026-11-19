@@ -1,16 +1,17 @@
 name: CI
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 permissions:
   contents: read
 jobs:
-  validate:
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify repository hygiene
-        run: |
-          test -f README.md
-          test -f .gitignore
-          ! git ls-files | grep -E '(^|/)\.env$|storage-state.*\.json$'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run lint:structure
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build

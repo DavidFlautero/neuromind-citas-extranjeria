@@ -1,28 +1,37 @@
 # Neuromind Citas Extranjería
 
-Sistema de asistencia a operadores para trámites de toma de huellas (TIE) en España.
+Proyecto de asistencia a expedientes de toma de huellas TIE para clientes autorizados.
 
-## Objetivo
-Gestionar expedientes de clientes autorizados, ayudar en la navegación por canales oficiales, pausar para verificaciones humanas y registrar resultados. No garantiza citas ni consulta disponibilidad real hasta validar una integración permitida.
+## Estado actual
+- Next.js con pantalla de acceso, panel, API de expedientes y registro de citas.
+- PostgreSQL con migración SQL, datos personales cifrados y auditoría básica.
+- Contratos de workflow, navegador Playwright **solo para pruebas locales**, notificador Telegram inicial.
+- Docker Compose, Nginx de ejemplo, backups y pruebas de humo.
+- **No existe detección real de citas ni reserva automática en ICPPlus.** El portal puede exigir interacción humana y prohibir automatización. No hay garantía de disponibilidad.
 
-## Arquitectura prevista
-- Next.js + TypeScript: panel de operadores
-- PostgreSQL: expedientes, oficinas, eventos y auditoría
-- Playwright: navegación asistida cuando esté autorizada
-- Redis + BullMQ: cola de tareas
-- Telegram: notificaciones
-- Ubuntu 24.04: despliegue aislado de otros proyectos
+## Requisitos
+Node.js 22+, PostgreSQL 17, Docker opcional.
 
-## Flujo de estados
-`PENDIENTE -> EN_PROCESO -> ESPERANDO_OPERADOR -> REANUDANDO -> RESULTADO -> CERRADO`
+## Desarrollo
+1. Copiar `.env.example` a `.env`.
+2. Configurar `DATABASE_URL`, `AUTH_SECRET` (32 bytes hex), `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH` y `POSTGRES_PASSWORD`.
+3. Generar el hash con `node scripts/hash-password.mjs 'contraseña-larga'`.
+4. `npm install`.
+5. `npm run db:migrate`.
+6. `npm test` y `npm run typecheck`.
+7. `npm run dev`. Abrir `/login`.
 
-Los CAPTCHA, controles de acceso, límites de consulta y confirmaciones oficiales requieren intervención humana. No se implementan técnicas de evasión, acaparamiento o reventa de citas.
+## Producción
+**No desplegar aún públicamente.** Falta limitación de intentos de login, MFA, endurecimiento de permisos, CSP, gestión de secretos separada, pruebas E2E, validación de consentimiento y restauración de backups. El compose y Dockerfile son bases de desarrollo.
 
-## Seguridad
-- No guardar contraseñas, cookies ni tokens en Git
-- Cifrar datos personales y limitar accesos
-- Obtener consentimiento del cliente y definir plazos de conservación
-- No publicar un navegador remoto sin autenticación fuerte y HTTPS
+## Arquitectura
+- `app/`: Next.js, autenticación, expedientes y citas.
+- `apps/worker/`: estados y recuperación futura.
+- `apps/browser-operator/`: Playwright para fixture local.
+- `apps/notifier/`: adaptador Telegram.
+- `packages/contracts/`: tipos compartidos.
+- `docs/`: decisiones, amenazas y runbooks.
+- `infrastructure/`: Docker, Nginx y backup.
 
-## Estado
-Repositorio inicial. **No hay aún buscador funcional ni integración comprobada con ICPPlus.**
+## Uso responsable
+La cita oficial es gratuita. No automatizar evasión de CAPTCHA, restricciones, colas, acaparamiento o reventa de citas. Las consultas reales solo pueden implementarse mediante mecanismos autorizados.

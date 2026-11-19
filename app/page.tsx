@@ -1,0 +1,1 @@
+export default function Home(){return <main><h1>Neuromind Citas Extranjería</h1><p>Centro de operaciones para toma de huellas TIE.</p><p>Las citas oficiales son gratuitas. Este software no garantiza disponibilidad.</p><a href="/dashboard">Abrir panel</a></main>}

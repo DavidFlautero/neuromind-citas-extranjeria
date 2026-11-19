@@ -1,0 +1,11 @@
+{
+  "name": "@neuromind/browser-operator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.56.0"
+  }
+}

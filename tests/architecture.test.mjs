@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {existsSync} from 'node:fs';test('worker and browser fixture exist',()=>{assert.ok(existsSync('apps/worker/src/state.ts'));assert.ok(existsSync('apps/browser-operator/src/flow.ts'))});

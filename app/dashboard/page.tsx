@@ -1,0 +1,1 @@
+import {redirect} from 'next/navigation';import {getSession} from '../../lib/security';import UI from './ui';export default async function Dashboard(){if(!await getSession())redirect('/');return <UI/>}

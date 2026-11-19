@@ -1,0 +1,8 @@
+'use client';
+import {useEffect,useState} from 'react';
+type Case={id:number;province:string;fullName:string;document:string;email:string;status:string};
+export default function UI(){const [cases,setCases]=useState<Case[]>([]);const [error,setError]=useState('');const [busy,setBusy]=useState(false);
+async function load(){const r=await fetch('/api/cases');if(r.ok)setCases(await r.json());else setError('Iniciá sesión para ver los expedientes')}
+useEffect(()=>{void load()},[]);
+async function add(form:FormData){setBusy(true);setError('');try{const r=await fetch('/api/cases',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.fromEntries(form))});if(!r.ok)throw Error(await r.text());await load()}catch(e){setError(String(e))}finally{setBusy(false)}}
+return <main><h1>Centro de operaciones</h1><p>Expedientes de toma de huellas. No hay integración de disponibilidad en vivo.</p><section><h2>Nuevo expediente</h2><form action={add}><p><input name="fullName" placeholder="Nombre completo" required/></p><p><input name="document" placeholder="NIE o documento" required/></p><p><input name="email" type="email" placeholder="Correo" required/></p><p><input name="province" placeholder="Provincia" required/></p><p><input name="notes" placeholder="Notas"/></p><button disabled={busy}>Guardar expediente</button></form></section>{error&&<p role="alert">{error}</p>}<section><h2>Expedientes ({cases.length})</h2>{cases.map(c=><p key={c.id}>#{c.id} · {c.fullName} · {c.province} · {c.status}</p>)}</section><a href="https://sede.administracionespublicas.gob.es/pagina/index/directorio/icpplus" target="_blank" rel="noreferrer">Abrir sede oficial</a></main>}

@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';test('database migration exists',()=>assert.match(readFileSync('sql/001_init.sql','utf8'),/CREATE TABLE/));test('no automated government availability is claimed',()=>assert.match(readFileSync('README.md','utf8'),/No hay|No se garantiza|no garantiza/i));

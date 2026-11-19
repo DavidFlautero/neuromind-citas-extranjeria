@@ -1,0 +1,4 @@
+import {createCipheriv,createDecipheriv,randomBytes} from 'node:crypto';
+function key(){const hex=process.env.DATA_ENCRYPTION_KEY;if(!hex||!/^[a-f0-9]{64}$/i.test(hex))throw Error('DATA_ENCRYPTION_KEY must be 32 bytes in hex');return Buffer.from(hex,'hex')}
+export function encrypt(value:string){const nonce=randomBytes(12);const cipher=createCipheriv('aes-256-gcm',key(),nonce);const encrypted=Buffer.concat([cipher.update(value,'utf8'),cipher.final()]);return 'v1:'+Buffer.concat([nonce,cipher.getAuthTag(),encrypted]).toString('base64')}
+export function decrypt(value:string){if(!value.startsWith('v1:'))throw Error('Unsupported ciphertext version');const raw=Buffer.from(value.slice(3),'base64');if(raw.length<28)throw Error('Malformed ciphertext');const decipher=createDecipheriv('aes-256-gcm',key(),raw.subarray(0,12));decipher.setAuthTag(raw.subarray(12,28));return Buffer.concat([decipher.update(raw.subarray(28)),decipher.final()]).toString('utf8')}

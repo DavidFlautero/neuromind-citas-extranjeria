@@ -1,0 +1,1 @@
+import {NextResponse} from 'next/server';import {sameOrigin} from '../../../../lib/http';export async function POST(req:Request){if(!sameOrigin(req))return NextResponse.json({error:'Origen inválido'},{status:403});const r=NextResponse.json({ok:true});r.cookies.set('nm_session','',{path:'/',maxAge:0,httpOnly:true});return r}

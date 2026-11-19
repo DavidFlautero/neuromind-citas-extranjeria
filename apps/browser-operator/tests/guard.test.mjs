@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';test('fixture browser denies remote URL',()=>assert.match(readFileSync('apps/browser-operator/src/flow.ts','utf8'),/localhost/));
